@@ -5,8 +5,8 @@ OSRM_HOSTPORT = os.getenv("OSRM_HOSTPORT", "localhost:5000")
 DEFAULT_LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../logs/tmp")
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../data")
 
-CENTER_LATITUDE = 40.75
-CENTER_LONGITUDE = -73.90
+CENTER_LATITUDE = 28.66
+CENTER_LONGITUDE = 77.21
 LAT_WIDTH = 18.0 / 60
 LON_WIDTH = 18.0 / 60
 MIN_LAT, MIN_LON = CENTER_LATITUDE - LAT_WIDTH / 2.0, CENTER_LONGITUDE - LON_WIDTH / 2.0

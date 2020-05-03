@@ -1,7 +1,7 @@
 from datetime import datetime
 from pytz import timezone
 
-tz = timezone("US/Eastern")
+tz = timezone("Asia/Kolkata")
 
 def get_local_datetime(timestamp):
     return tz.fromutc(datetime.utcfromtimestamp(timestamp))

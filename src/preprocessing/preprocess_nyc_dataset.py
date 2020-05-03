@@ -43,17 +43,13 @@ def extract_bounding_box(df, bounding_box):
             (df.destination_lon < max_lon)]
     return df
 
-def create_dataset(gtrip_path, ytrip_path, bounding_box):
-    green_cols = ['lpep_pickup_datetime', 'Lpep_dropoff_datetime', 'Pickup_longitude', 'Pickup_latitude',
-                  'Dropoff_longitude', 'Dropoff_latitude', 'Fare_amount']
-    yellow_cols = ['tpep_pickup_datetime', 'tpep_dropoff_datetime', 'pickup_longitude', 'pickup_latitude',
-                   'dropoff_longitude', 'dropoff_latitude', 'fare_amount']
-    new_cols = ['pickup_datetime', 'dropoff_datetime', 'origin_lon', 'origin_lat', 'destination_lon', 'destination_lat', 'fare']
+def create_dataset(logs_path, bounding_box):
+    logs_cols = ['picked_at', 'delivered_at', 'res_longitude', 'res_latitude', 'user_saved_longitude', 'user_saved_latitude','fare']
+    new_cols = ['pickup_datetime', 'dropoff_datetime', 'origin_lon', 'origin_lat', 'destination_lon', 'destination_lat']
     saved_cols = ['request_datetime', 'trip_time', 'origin_lon', 'origin_lat', 'destination_lon', 'destination_lat', 'fare']
 
     # Load green and yellow taxi trip data and merge them
-    df = load_trip_data(gtrip_path, green_cols, new_cols)
-    df = df.append(load_trip_data(ytrip_path, yellow_cols, new_cols))
+    df = load_trip_data(logs_path, logs_cols, new_cols)
     print("Load: {} records".format(len(df)))
 
     df = extract_bounding_box(df, bounding_box)
@@ -72,9 +68,8 @@ if __name__ == '__main__':
     parser.add_argument("--month", help = "year-month")
     args = parser.parse_args()
 
-    GREEN_PATH = '{}/green_tripdata_{}.csv'.format(args.data, args.month)
-    YELLOW_PATH = '{}/yellow_tripdata_{}.csv'.format(args.data, args.month)
+    DATA_PATH = '{}/logs_data_{}.csv'.format(args.data, args.month)
     OUTPUT_PATH = '{}/trips_{}.csv'.format(args.data, args.month)
-    df = create_dataset(GREEN_PATH, YELLOW_PATH, BOUNDING_BOX)
+    df = create_dataset(DATA_PATH, BOUNDING_BOX)
     print("Saving DataFrame containing {} rows".format(len(df)))
     df.to_csv(OUTPUT_PATH)
