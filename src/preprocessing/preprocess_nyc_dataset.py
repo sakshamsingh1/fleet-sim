@@ -24,10 +24,26 @@ def remove_outliers(df):
     df['speed'] = df.distance / df.trip_time / 1000 * 3600 # km/h
     df['rpm'] = df.fare / df.trip_time * 60 # $/m
 
+    l0 = len(df)
+    print('original len : ' + str(l0))
     df = df[(df.trip_time > 60) & (df.trip_time < 3600 * 2)]
+    l1 = len(df)
+    print('after trip_time : ' + str(l0-l1))
     df = df[(df.distance > 100) & (df.distance < 100000)]
+
+    l2 = len(df)
+    print('after distance : ' + str(l1 - l2))
+
     df = df[(df.speed > 2) & (df.speed < 80)]
+
+    l3 = len(df)
+    print('after speed : ' + str(l2 - l2))
+
     df = df[(df.rpm < 3.0) & (df.rpm > 0.3)]
+
+    l4 = len(df)
+    print('after rpm : ' + str(l3 - l4))
+
     return df.drop(['distance', 'speed', 'rpm'], axis=1)
 
 def extract_bounding_box(df, bounding_box):
