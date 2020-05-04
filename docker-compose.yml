@@ -12,9 +12,9 @@ services:
       - ./logs:/home/logs
     command: ./bin/run.sh
     depends_on:
-      - osrm1
+      - osrm
 
-  osrm1:
+  osrm:
     image: osrm/osrm-backend
     volumes:
       - ./osrm:/data
