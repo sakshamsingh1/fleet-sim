@@ -12,12 +12,13 @@ services:
       - ./logs:/home/logs
     command: ./bin/run.sh
     depends_on:
-      - osrm
+      - osrm1
 
-  osrm:
-    image: latest-dev
+  osrm1:
+    image: osrm/osrm-backend
     volumes:
       - ./osrm:/data
     ports:
       - "5000:5000"
+    command: osrm-routed --algorithm mld --verbosity error /data/NewDelhi.osrm
 
