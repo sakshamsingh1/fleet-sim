@@ -15,7 +15,7 @@ services:
       - osrm
 
   osrm:
-    image: 19eabe7a17e5
+    image: latest-dev
     volumes:
       - ./osrm:/data
     ports:
