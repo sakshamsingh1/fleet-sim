@@ -22,7 +22,6 @@ def convert_datetime(df):
 def remove_outliers(df):
     df['distance'] = great_circle_distance(df.origin_lat, df.origin_lon, df.destination_lat, df.destination_lon).astype(int)
     df['speed'] = df.distance / df.trip_time / 1000 * 3600 # km/h
-    df['rpm'] = df.fare / df.trip_time * 60 # $/m
 
     l0 = len(df)
     print('original len : ' + str(l0))
@@ -39,7 +38,7 @@ def remove_outliers(df):
     l3 = len(df)
     print('after speed : ' + str(l2 - l2))
 
-    df = df[(df.rpm < 3.0) & (df.rpm > 0.3)]
+    df = df[(df.fare < 200) & (df.fare > 10)]
 
     l4 = len(df)
     print('after rpm : ' + str(l3 - l4))
