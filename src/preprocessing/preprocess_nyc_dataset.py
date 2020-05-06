@@ -43,7 +43,7 @@ def remove_outliers(df):
     l4 = len(df)
     print('after rpm : ' + str(l3 - l4))
 
-    return df.drop(['distance', 'speed', 'rpm'], axis=1)
+    return df.drop(['distance', 'speed'], axis=1)
 
 def extract_bounding_box(df, bounding_box):
     min_lat, min_lon = bounding_box[0]
