@@ -135,7 +135,7 @@ if __name__ == '__main__':
     df = pd.read_csv(args.input_file, index_col='id')
     print("load {} rows".format(len(df)))
 
-    n_weeks = 4
+    n_weeks = 2
     df = create_training_dataset(df, n_weeks)
     print("created training dataset")
 
