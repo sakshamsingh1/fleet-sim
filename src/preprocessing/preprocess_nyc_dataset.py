@@ -21,29 +21,19 @@ def convert_datetime(df):
 
 def remove_outliers(df):
     df['distance'] = great_circle_distance(df.origin_lat, df.origin_lon, df.destination_lat, df.destination_lon).astype(int)
-    df['speed'] = df.distance / df.trip_time / 1000 * 3600 # km/h
+    df['speed'] = df.distance / df.trip_time / 1000 * 3600  # km/h
+    df['rpm'] = df.fare / df.trip_time * 60  # $/m
 
-    l0 = len(df)
-    print('original len : ' + str(l0))
+    print(f"df original len {len(df)}")
     df = df[(df.trip_time > 60) & (df.trip_time < 3600 * 2)]
-    l1 = len(df)
-    print('after trip_time : ' + str(l0-l1))
+    print(f"df post trip time len {len(df)}")
     df = df[(df.distance > 100) & (df.distance < 100000)]
-
-    l2 = len(df)
-    print('after distance : ' + str(l1 - l2))
-
-    df = df[(df.speed > 2) & (df.speed < 80)]
-
-    l3 = len(df)
-    print('after speed : ' + str(l2 - l2))
-
-    df = df[(df.fare < 200) & (df.fare > 10)]
-
-    l4 = len(df)
-    print('after rpm : ' + str(l3 - l4))
-
-    return df.drop(['distance', 'speed'], axis=1)
+    print(f"df post distance len {len(df)}")
+    df = df[(df.speed > 2) & (df.speed < 100)]
+    print(f"df post speed len {len(df)}")
+    df = df[(df.rpm < 7.0) & (df.rpm > 0.3)]
+    print(f"df post rpm len {len(df)}")
+    return df.drop(['distance', 'speed', 'rpm'], axis=1)
 
 def extract_bounding_box(df, bounding_box):
     min_lat, min_lon = bounding_box[0]
@@ -63,7 +53,6 @@ def create_dataset(logs_path, bounding_box):
     new_cols = ['pickup_datetime', 'dropoff_datetime', 'origin_lon', 'origin_lat', 'destination_lon', 'destination_lat']
     saved_cols = ['request_datetime', 'trip_time', 'origin_lon', 'origin_lat', 'destination_lon', 'destination_lat', 'fare']
 
-    # Load green and yellow taxi trip data and merge them
     df = load_trip_data(logs_path, logs_cols, new_cols)
     print("Load: {} records".format(len(df)))
 
