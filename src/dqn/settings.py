@@ -40,8 +40,8 @@ NUM_FEATURES = 7 + NUM_SUPPLY_DEMAND_MAPS * (1 + (FLAGS.n_diffusions + 1) * 2) +
                + FLAGS.trip_diffusion * 4
 
 # training hyper parameters
-WORKING_COST = 0.4
-DRIVING_COST = 0.4
+WORKING_COST = 0.2
+DRIVING_COST = 0.2
 STATE_REWARD_TABLE = {
     vehicle_status_codes.IDLE : -WORKING_COST,
     vehicle_status_codes.CRUISING : -(WORKING_COST + DRIVING_COST),
