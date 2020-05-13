@@ -9,26 +9,24 @@ Below you will find step-by-step instructions to set up the NYC taxi simulation 
 **Please make more than 10 GB memory resource available to Docker Engine.** 
 ### 1. Download OSM Data
 ```commandline
-wget https://download.bbbike.org/osm/bbbike/NewYork/NewYork.osm.pbf -P osrm
+wget https://download.bbbike.org/osm/bbbike/NewDelhi/NewDelhi.osm.pbf -P osrm
 ```
 
 ### 2. Preprocess OSM Data
 ```commandline
 cd osrm
-docker run -t -v $(pwd):/data osrm/osrm-backend osrm-extract -p /opt/car.lua /data/NewYork.osm.pbf
-docker run -t -v $(pwd):/data osrm/osrm-backend osrm-partition /data/NewYork.osrm
-docker run -t -v $(pwd):/data osrm/osrm-backend osrm-customize /data/NewYork.osrm
+docker run -t -v $(pwd):/data osrm/osrm-backend osrm-extract -p /opt/car.lua /data/NewDelhi.osm.pbf
+docker run -t -v $(pwd):/data osrm/osrm-backend osrm-partition /data/NewDelhi.osrm
+docker run -t -v $(pwd):/data osrm/osrm-backend osrm-customize /data/NewDelhi.osrm
 ```
 
 ### 3. Download Trip Data
 ```commandline
 mkdir data
-wget https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2016-05.csv -P data/trip_records
-wget https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2016-05.csv -P data/trip_records
-wget https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2016-06.csv -P data/trip_records
-wget https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2016-06.csv -P data/trip_records
+cd data 
+mkdir trip_records
 ```
-
+Move your data inside data/trip_records
 ### 4. Build Docker image
 ```commandline
 docker-compose build sim
@@ -36,24 +34,24 @@ docker-compose build sim
 
 ### 5. Preprocess Trip Records
 ```commandline
-docker-compose run --no-deps sim python src/preprocessing/preprocess_nyc_dataset.py ./data/trip_records/ --month 2016-05
-docker-compose run --no-deps sim python src/preprocessing/preprocess_nyc_dataset.py ./data/trip_records/ --month 2016-06
+docker-compose run --no-deps sim python src/preprocessing/preprocess_nyc_dataset.py ./data/trip_records/ --month <train_time>
+docker-compose run --no-deps sim python src/preprocessing/preprocess_nyc_dataset.py ./data/trip_records/ --month <test_time>
 ```
 
 ### 6. Snap origins and destinations of all trips to OSM
 ```commandline
-docker-compose run sim python src/preprocessing/snap_to_road.py ./data/trip_records/trips_2016-05.csv ./data/trip_records/mm_trips_2016-05.csv
-docker-compose run sim python src/preprocessing/snap_to_road.py ./data/trip_records/trips_2016-06.csv ./data/trip_records/mm_trips_2016-06.csv
+docker-compose run sim python src/preprocessing/snap_to_road.py ./data/trip_records/trips_<train_time>.csv ./data/trip_records/mm_trips_<train_time>.csv
+docker-compose run sim python src/preprocessing/snap_to_road.py ./data/trip_records/trips_<test_time>.csv ./data/trip_records/mm_trips_<test_time>.csv
 ```
 
 ### 7. Create trip database for Simulation
 ```commandline
-docker-compose run --no-deps sim python src/preprocessing/create_db.py ./data/trip_records/mm_trips_2016-06.csv
+docker-compose run --no-deps sim python src/preprocessing/create_db.py ./data/trip_records/mm_trips_<test_time>.csv
 ```
 
 ### 8. Prepare statistical demand profile using training dataset
 ```commandline
-docker-compose run --no-deps sim python src/preprocessing/create_profile.py ./data/trip_records/mm_trips_2016-05.csv
+docker-compose run --no-deps sim python src/preprocessing/create_profile.py ./data/trip_records/mm_trips_<train_time>.csv
 ```
 
 ### 9. Precompute trip time and trajectories by OSRM
