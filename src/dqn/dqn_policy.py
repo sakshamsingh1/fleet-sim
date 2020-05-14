@@ -54,29 +54,29 @@ class DQNDispatchPolicy(DispatchPolicy):
         if vehicle_state.idle_duration >= MIN_DISPATCH_CYCLE and FLAGS.offduty_probability > np.random.random():
             a, offduty = (0, 0), 1
 
-        elif self.q_network is None:
+        else :
             a, offduty = (0, 0), 0
-
-        else:
-            x, y = mesh.convert_lonlat_to_xy(vehicle_state.lon, vehicle_state.lat)
-            if (x, y) in self.q_cache:
-                actions, Q, amax = self.q_cache[(x, y)]
-            else:
-                s, actions = self.feature_constructor.construct_current_features(x, y)
-                Q = self.q_network.compute_q_values(s)
-
-                # only considers actions whose values are greater than wait action value
-                wait_action_value = Q[0]
-                actions = [a for a, q in zip(actions, Q) if q >= wait_action_value]
-                Q = Q[Q >= wait_action_value]
-                amax = np.argmax(Q)
-                self.q_cache[(x, y)] = actions, Q, amax
-            # if actions[amax] == (0, 0):
-            #     aidx = amax
-            # else:
-            aidx = self.q_network.get_action(Q, amax)
-            a = actions[aidx]
-            offduty = 1 if Q[aidx] < FLAGS.offduty_threshold else 0
+        #
+        # else:
+        #     x, y = mesh.convert_lonlat_to_xy(vehicle_state.lon, vehicle_state.lat)
+        #     if (x, y) in self.q_cache:
+        #         actions, Q, amax = self.q_cache[(x, y)]
+        #     else:
+        #         s, actions = self.feature_constructor.construct_current_features(x, y)
+        #         Q = self.q_network.compute_q_values(s)
+        #
+        #         # only considers actions whose values are greater than wait action value
+        #         wait_action_value = Q[0]
+        #         actions = [a for a, q in zip(actions, Q) if q >= wait_action_value]
+        #         Q = Q[Q >= wait_action_value]
+        #         amax = np.argmax(Q)
+        #         self.q_cache[(x, y)] = actions, Q, amax
+        #     # if actions[amax] == (0, 0):
+        #     #     aidx = amax
+        #     # else:
+        #     aidx = self.q_network.get_action(Q, amax)
+        #     a = actions[aidx]
+        #     offduty = 1 if Q[aidx] < FLAGS.offduty_threshold else 0
         return a, offduty
 
 
