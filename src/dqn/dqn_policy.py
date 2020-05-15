@@ -10,7 +10,7 @@ from agent.dispatch_policy import DispatchPolicy
 from . import settings
 from common.time_utils import get_local_datetime
 from common import vehicle_status_codes, mesh
-from random import randrange
+from random import randint
 
 class DQNDispatchPolicy(DispatchPolicy):
 
@@ -56,8 +56,8 @@ class DQNDispatchPolicy(DispatchPolicy):
             a, offduty = (0, 0), 1
 
         else :
-            a1 = randrange(8)
-            a2 = randrange(8)
+            a1 = randint(-7, 7)
+            a2 = randint(-7, 7)
             a, offduty = (a1, a2), 0
 
         # else:
