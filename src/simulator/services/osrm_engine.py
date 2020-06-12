@@ -22,6 +22,7 @@ class OSRMEngine(object):
             location = nearest_point["location"]
             distance = nearest_point["distance"]
             resultlist.append((location, distance))
+            print(f"distance : {distance}")
 
         return resultlist
 
